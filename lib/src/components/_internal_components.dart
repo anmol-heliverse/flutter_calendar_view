@@ -167,9 +167,16 @@ class TimeLine extends StatefulWidget {
   /// This field will be used to set end hour for day and week view
   final int endHour;
 
+  final void Function(String) onTapTime;
+
+  static void _defaultButtonPressed(String message) {
+    print('Default action: $message');
+  }
+
   /// Time line to display time at left side of day or week view.
   const TimeLine({
     Key? key,
+    this.onTapTime = _defaultButtonPressed,
     required this.timeLineWidth,
     required this.hourHeight,
     required this.height,
@@ -234,6 +241,7 @@ class _TimeLineState extends State<TimeLine> {
                   (widget.hourHeight * (i - widget.startHour + 1)) +
                   widget.timeLineOffset,
               hour: i,
+              tapTimer: widget.onTapTime,
             ),
           if (widget.showHalfHours)
             for (int i = widget.startHour; i < widget.endHour; i++)
@@ -246,6 +254,7 @@ class _TimeLineState extends State<TimeLine> {
                     widget.timeLineOffset,
                 hour: i,
                 minutes: 30,
+                tapTimer: widget.onTapTime,
               ),
           if (widget.showQuarterHours)
             for (int i = 0; i < widget.endHour; i++) ...[
@@ -259,6 +268,7 @@ class _TimeLineState extends State<TimeLine> {
                     widget.timeLineOffset,
                 hour: i,
                 minutes: 15,
+                tapTimer: widget.onTapTime,
               ),
 
               /// this is for 45 minutes
@@ -271,6 +281,7 @@ class _TimeLineState extends State<TimeLine> {
                     widget.timeLineOffset,
                 hour: i,
                 minutes: 45,
+                tapTimer: widget.onTapTime,
               ),
             ],
         ],
@@ -285,28 +296,34 @@ class _TimeLineState extends State<TimeLine> {
     required double topPosition,
     required double bottomPosition,
     required int hour,
+    required Function tapTimer,
     int minutes = 0,
   }) {
     return Visibility(
-      visible: !((_currentTime.minute >= 45 && _currentTime.hour == hour - 1) ||
-              (_currentTime.minute <= 15 && _currentTime.hour == hour)) ||
-          !(widget.liveTimeIndicatorSettings.showTime ||
-              widget.liveTimeIndicatorSettings.showTimeBackgroundView),
+      // visible: !((_currentTime.minute >= 45 && _currentTime.hour == hour - 1) ||
+      //         (_currentTime.minute <= 15 && _currentTime.hour == hour)) ||
+      //     !(widget.liveTimeIndicatorSettings.showTime ||
+      //         widget.liveTimeIndicatorSettings.showTimeBackgroundView),
       child: Positioned(
         top: topPosition,
         left: 0,
         right: 0,
         bottom: bottomPosition,
-        child: Container(
-          height: widget.hourHeight,
-          width: widget.timeLineWidth,
-          child: widget.timeLineBuilder.call(
-            DateTime(
-              TimeLine._date.year,
-              TimeLine._date.month,
-              TimeLine._date.day,
-              hour,
-              minutes,
+        child: GestureDetector(
+          onTap: () {
+            tapTimer(hour.toString());
+          },
+          child: Container(
+            height: widget.hourHeight,
+            width: widget.timeLineWidth,
+            child: widget.timeLineBuilder.call(
+              DateTime(
+                TimeLine._date.year,
+                TimeLine._date.month,
+                TimeLine._date.day,
+                hour,
+                minutes,
+              ),
             ),
           ),
         ),
