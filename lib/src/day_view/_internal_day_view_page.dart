@@ -133,6 +133,9 @@ class InternalDayViewPage<T extends Object?> extends StatefulWidget {
   /// Flag to keep scrollOffset of pages on page change
   final bool keepScrollOffset;
 
+  /// Custom function to make time field tapable
+  final void Function(String) onTapTime;
+
   /// Defines a single day page.
   const InternalDayViewPage({
     Key? key,
@@ -173,6 +176,7 @@ class InternalDayViewPage<T extends Object?> extends StatefulWidget {
     required this.emulateVerticalOffsetBy,
     required this.onTileDoubleTap,
     this.keepScrollOffset = false,
+    required this.onTapTime,
   }) : super(key: key);
 
   @override
@@ -314,6 +318,7 @@ class _InternalDayViewPageState<T extends Object?>
                       ),
                     ),
                     TimeLine(
+                      onTapTime: widget.onTapTime,
                       height: widget.height,
                       hourHeight: widget.hourHeight,
                       timeLineBuilder: widget.timeLineBuilder,
