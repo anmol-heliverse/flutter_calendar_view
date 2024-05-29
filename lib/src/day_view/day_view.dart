@@ -229,6 +229,9 @@ class DayView<T extends Object?> extends StatefulWidget {
   /// Flag to keep scrollOffset of pages on page change
   final bool keepScrollOffset;
 
+  /// Custom on tap function to get clickable time
+  final void Function(String) onTapTime;
+
   /// Main widget for day view.
   const DayView({
     Key? key,
@@ -279,6 +282,7 @@ class DayView<T extends Object?> extends StatefulWidget {
     this.onEventDoubleTap,
     this.endHour = Constants.hoursADay,
     this.keepScrollOffset = false,
+    required this.onTapTime,
   })  : assert(!(onHeaderTitleTap != null && dayTitleBuilder != null),
             "can't use [onHeaderTitleTap] & [dayTitleBuilder] simultaneously"),
         assert(timeLineOffset >= 0,
@@ -505,6 +509,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
                             dayViewScrollController: _scrollController,
                             scrollListener: _scrollPageListener,
                             keepScrollOffset: widget.keepScrollOffset,
+                            onTapTime: widget.onTapTime,
                           ),
                         );
                       },
